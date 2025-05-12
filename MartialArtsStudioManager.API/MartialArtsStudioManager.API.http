@@ -1,0 +1,6 @@
+@MartialArtsStudioManager.API_HostAddress = http://localhost:5157
+
+GET {{MartialArtsStudioManager.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

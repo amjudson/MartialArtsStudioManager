@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
-import { NavbarComponent } from './components/Navbar';
+import { NavbarComponent } from './components/NavbarComponent';
 import { initializeAuth } from './store/slices/authSlice';
 
 export function Providers({ children }: { children: React.ReactNode }) {

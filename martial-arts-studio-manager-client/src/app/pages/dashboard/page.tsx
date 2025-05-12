@@ -3,7 +3,7 @@
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '../store/slices/authSlice';
+import { selectIsAuthenticated } from '../../store/slices/authSlice';
 
 export default function DashboardPage() {
     const isAuthenticated = useSelector(selectIsAuthenticated);

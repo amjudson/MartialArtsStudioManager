@@ -1,5 +1,16 @@
 import { baseApi } from './baseApi';
 
+export interface ApplicationUser {
+    id: string;
+    userName: string;
+    email: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    createdAt: string;
+    lastLoginAt?: string;
+}
+
 interface LoginRequest {
     email: string;
     password: string;
@@ -14,6 +25,7 @@ interface RegisterRequest {
 
 interface AuthResponse {
     token: string;
+    user: ApplicationUser;
 }
 
 interface ErrorResponse {

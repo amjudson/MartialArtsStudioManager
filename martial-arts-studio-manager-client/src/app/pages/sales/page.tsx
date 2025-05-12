@@ -2,44 +2,44 @@
 
 import React, { useState } from 'react';
 import { Container, Button, Modal } from 'react-bootstrap';
-import { ItemList } from '../components/ItemList';
-import { ItemForm } from '../components/ItemForm';
-import { Item } from '../types/Item';
+import { SaleList } from '../../components/SaleList';
+import { SaleForm } from '../../components/SaleForm';
+import { Sale } from '../../types/Sale';
 
-export default function ItemsPage() {
+export default function SalesPage() {
     const [showForm, setShowForm] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<Item | undefined>();
+    const [selectedSale, setSelectedSale] = useState<Sale | undefined>();
 
     const handleClose = () => {
         setShowForm(false);
-        setSelectedItem(undefined);
+        setSelectedSale(undefined);
     };
 
-    const handleEdit = (item: Item) => {
-        setSelectedItem(item);
+    const handleEdit = (sale: Sale) => {
+        setSelectedSale(sale);
         setShowForm(true);
     };
 
     return (
         <Container className="py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1>Items</h1>
+                <h1>Sales</h1>
                 <Button variant="primary" onClick={() => setShowForm(true)}>
-                    Add New Item
+                    Add New Sale
                 </Button>
             </div>
 
-            <ItemList onEdit={handleEdit} />
+            <SaleList onEdit={handleEdit} />
 
             <Modal show={showForm} onHide={handleClose} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        {selectedItem ? 'Edit Item' : 'Add New Item'}
+                        {selectedSale ? 'Edit Sale' : 'Add New Sale'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <ItemForm
-                        item={selectedItem}
+                    <SaleForm
+                        sale={selectedSale}
                         onSuccess={handleClose}
                     />
                 </Modal.Body>

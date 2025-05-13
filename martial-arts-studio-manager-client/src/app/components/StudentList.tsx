@@ -58,7 +58,7 @@ export default function StudentList() {
                                 <Card.Text>
                                     <strong>Email:</strong> {student.email}<br />
                                     <strong>Phone:</strong> {student.phoneNumber}<br />
-                                    <strong>Belt Rank:</strong> {student.beltRank}
+                                    <strong>Belt Rank:</strong> {student.beltRank?.name || 'Not assigned'}
                                 </Card.Text>
                                 <Button 
                                     variant="primary" 

@@ -1,45 +1,45 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Container, Button, Modal } from 'react-bootstrap';
-import { SaleList } from '../components/SaleList';
-import { SaleForm } from '../components/SaleForm';
-import { Sale } from '../types/Sale';
+import EquipmentList from '../../components/EquipmentList';
+import EquipmentForm from '../../components/EquipmentForm';
+import { Equipment } from '../../types/Equipment';
 
-export default function SalesPage() {
+export default function EquipmentPage() {
     const [showForm, setShowForm] = useState(false);
-    const [selectedSale, setSelectedSale] = useState<Sale | undefined>();
+    const [selectedEquipment, setSelectedEquipment] = useState<Equipment | undefined>();
 
     const handleClose = () => {
         setShowForm(false);
-        setSelectedSale(undefined);
+        setSelectedEquipment(undefined);
     };
 
-    const handleEdit = (sale: Sale) => {
-        setSelectedSale(sale);
+    const handleEdit = (equipment: Equipment) => {
+        setSelectedEquipment(equipment);
         setShowForm(true);
     };
 
     return (
-        <Container className="py-4">
+        <Container fluid>
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1>Sales</h1>
+                <h1>Equipment Management</h1>
                 <Button variant="primary" onClick={() => setShowForm(true)}>
-                    Add New Sale
+                    Add New Equipment
                 </Button>
             </div>
 
-            <SaleList onEdit={handleEdit} />
+            <EquipmentList onEdit={handleEdit} />
 
             <Modal show={showForm} onHide={handleClose} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        {selectedSale ? 'Edit Sale' : 'Add New Sale'}
+                        {selectedEquipment ? 'Edit Equipment' : 'Add New Equipment'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SaleForm
-                        sale={selectedSale}
+                    <EquipmentForm 
+                        equipment={selectedEquipment} 
                         onSuccess={handleClose}
                     />
                 </Modal.Body>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { useAddEquipmentMutation, useUpdateEquipmentMutation } from '../store/api/apiSlice';
+import { useAddEquipmentMutation, useUpdateEquipmentMutation } from '../store/api/equipmentApi';
 import { Equipment } from '../types/Equipment';
 
 interface EquipmentFormProps {
@@ -49,7 +49,7 @@ export default function EquipmentForm({ equipment, onSuccess }: EquipmentFormPro
                 ...formData,
                 purchasePrice: parseFloat(formData.purchasePrice.toString()),
                 quantity: parseInt(formData.quantity.toString()),
-                lastMaintenanceDate: formData.lastMaintenanceDate || null
+                lastMaintenanceDate: formData.lastMaintenanceDate || undefined
             };
 
             if (equipment) {

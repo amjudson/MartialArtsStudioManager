@@ -22,7 +22,7 @@ export const Login: React.FC = () => {
         
         try {
             const result = await login({ email, password }).unwrap();
-            dispatch(setCredentials({ token: result.token }));
+            dispatch(setCredentials({ token: result.token, user: result.user }));
             router.push('/dashboard');
         } catch (err) {
             setError('Invalid email or password');

@@ -2,6 +2,7 @@ export { baseApi } from './baseApi';
 export { studentsApi } from './studentsApi';
 export { itemsApi } from './itemsApi';
 export { salesApi } from './salesApi';
+export { equipmentApi } from './equipmentApi';
 
 // Re-export all hooks
 export {
@@ -27,4 +28,12 @@ export {
     useAddSaleMutation,
     useUpdateSaleMutation,
     useDeleteSaleMutation
-} from './salesApi'; 
+} from './salesApi';
+
+export {
+    useGetEquipmentQuery,
+    useGetEquipmentByIdQuery,
+    useAddEquipmentMutation,
+    useUpdateEquipmentMutation,
+    useDeleteEquipmentMutation
+} from './equipmentApi'; 

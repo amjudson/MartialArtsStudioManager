@@ -35,10 +35,21 @@ const authSlice = createSlice({
         initializeAuth: (state) => {
             const token = sessionStorage.getItem('token');
             const userJson = sessionStorage.getItem('user');
+            
             if (token && userJson) {
-                state.token = token;
-                state.user = JSON.parse(userJson);
-                state.isAuthenticated = true;
+                try {
+                    const user = JSON.parse(userJson);
+                    state.token = token;
+                    state.user = user;
+                    state.isAuthenticated = true;
+                } catch (error) {
+                    // If JSON parsing fails, clear the invalid data
+                    sessionStorage.removeItem('token');
+                    sessionStorage.removeItem('user');
+                    state.token = null;
+                    state.user = null;
+                    state.isAuthenticated = false;
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ export interface Student {
     phoneNumber: string;
     dateOfBirth: string;
     joinDate: string;
+    beltRankId: number;
     beltRank: string;
     isActive: boolean;
     createdAt: string;

@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { Student, BeltRank } from '../types';
+import { Student } from '../types/Student';
+import { BeltRank } from '../types/BeltRank';
 import { useAddStudentMutation, useUpdateStudentMutation } from '../store/api/studentsApi';
+import { useGetBeltRanksQuery } from '../store/api/beltRanksApi';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import DatePicker from 'react-datepicker';
@@ -15,22 +17,32 @@ interface StudentFormProps {
     onSuccess: () => void;
 }
 
+interface StudentFormData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    dateOfBirth: Date;
+    joinDate: Date;
+    beltRankId: number;
+}
+
 export function StudentForm({ student, onSuccess }: StudentFormProps) {
-    const [formData, setFormData] = useState<Partial<Student>>({
+    const [formData, setFormData] = useState<StudentFormData>({
         firstName: '',
         lastName: '',
         email: '',
         phoneNumber: '',
         dateOfBirth: new Date(),
         joinDate: new Date(),
-        beltRankId: 1 // Default to White belt
+        beltRankId: 1 // Default to White belt (ID: 1)
     });
-    const [beltRanks, setBeltRanks] = useState<BeltRank[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [addStudent, { isLoading: isCreating, error: createError }] = useAddStudentMutation();
     const [updateStudent, { isLoading: isUpdating, error: updateError }] = useUpdateStudentMutation();
+    const { data: beltRanks, isLoading: isLoadingBeltRanks, error: beltRanksError } = useGetBeltRanksQuery();
 
     useEffect(() => {
         if (student) {
@@ -44,15 +56,9 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
                 beltRankId: student.beltRankId
             });
         }
-
-        // Fetch belt ranks
-        fetch('/api/beltranks')
-            .then(response => response.json())
-            .then(data => setBeltRanks(data))
-            .catch(error => setError('Failed to load belt ranks'));
     }, [student]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         
         if (name === 'phoneNumber') {
@@ -71,15 +77,17 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
                 }
             }
             
-            setFormData((prev: Partial<Student>) => ({ ...prev, [name]: formatted }));
+            setFormData(prev => ({ ...prev, [name]: formatted }));
+        } else if (name === 'beltRankId') {
+            setFormData(prev => ({ ...prev, [name]: parseInt(value, 10) }));
         } else {
-            setFormData((prev: Partial<Student>) => ({ ...prev, [name]: value }));
+            setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
 
     const handleDateChange = (date: Date | null, field: 'dateOfBirth' | 'joinDate') => {
         if (date) {
-            setFormData((prev: Partial<Student>) => ({ ...prev, [field]: date }));
+            setFormData(prev => ({ ...prev, [field]: date }));
         }
     };
 
@@ -91,8 +99,9 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
         try {
             const submitData = {
                 ...formData,
-                dateOfBirth: format(formData.dateOfBirth as Date, 'MM/dd/yyyy'),
-                joinDate: format(formData.joinDate as Date, 'MM/dd/yyyy'),
+                dateOfBirth: format(formData.dateOfBirth, 'MM/dd/yyyy'),
+                joinDate: format(formData.joinDate, 'MM/dd/yyyy'),
+                isActive: true
             };
 
             if (student) {
@@ -108,6 +117,14 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
         }
     };
 
+    if (isLoadingBeltRanks) {
+        return <div>Loading belt ranks...</div>;
+    }
+
+    if (beltRanksError) {
+        return <Alert variant="danger">Failed to load belt ranks</Alert>;
+    }
+
     return (
         <Form onSubmit={handleSubmit}>
             {error && <Alert variant="danger">{error}</Alert>}
@@ -118,7 +135,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
                     type="text"
                     name="firstName"
                     value={formData.firstName}
-                    onChange={handleChange as any}
+                    onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -129,7 +146,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
                     type="text"
                     name="lastName"
                     value={formData.lastName}
-                    onChange={handleChange as any}
+                    onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -140,7 +157,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
                     type="email"
                     name="email"
                     value={formData.email}
-                    onChange={handleChange as any}
+                    onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -151,7 +168,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
                     type="tel"
                     name="phoneNumber"
                     value={formData.phoneNumber}
-                    onChange={handleChange as any}
+                    onChange={handleChange}
                     placeholder="(000)000-0000"
                     maxLength={14}
                     required
@@ -161,7 +178,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
             <Form.Group className="mb-3">
                 <Form.Label>Date of Birth</Form.Label>
                 <DatePicker
-                    selected={formData.dateOfBirth as Date}
+                    selected={formData.dateOfBirth}
                     onChange={(date) => handleDateChange(date, 'dateOfBirth')}
                     dateFormat="MM/dd/yyyy"
                     className="form-control"
@@ -172,7 +189,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
             <Form.Group className="mb-3">
                 <Form.Label>Join Date</Form.Label>
                 <DatePicker
-                    selected={formData.joinDate as Date}
+                    selected={formData.joinDate}
                     onChange={(date) => handleDateChange(date, 'joinDate')}
                     dateFormat="MM/dd/yyyy"
                     className="form-control"
@@ -188,7 +205,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
                     onChange={handleChange}
                     required
                 >
-                    {beltRanks.map(rank => (
+                    {beltRanks?.map(rank => (
                         <option key={rank.id} value={rank.id}>
                             {rank.name}
                         </option>

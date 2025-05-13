@@ -1,3 +1,5 @@
+import { BeltRank } from './BeltRank';
+
 export interface Student {
     id: string;
     firstName: string;
@@ -7,7 +9,7 @@ export interface Student {
     dateOfBirth: string;
     joinDate: string;
     beltRankId: number;
-    beltRank: string;
+    beltRank?: BeltRank;
     isActive: boolean;
     createdAt: string;
     updatedAt?: string;

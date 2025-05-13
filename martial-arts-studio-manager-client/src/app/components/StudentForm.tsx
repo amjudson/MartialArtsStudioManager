@@ -99,10 +99,12 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
         try {
             const submitData = {
                 ...formData,
-                dateOfBirth: format(formData.dateOfBirth, 'MM/dd/yyyy'),
-                joinDate: format(formData.joinDate, 'MM/dd/yyyy'),
+                dateOfBirth: formData.dateOfBirth.toISOString(),
+                joinDate: formData.joinDate.toISOString(),
                 isActive: true
             };
+
+            console.log('Submitting student data:', submitData);
 
             if (student) {
                 await updateStudent({ id: student.id, student: submitData }).unwrap();
@@ -111,6 +113,7 @@ export function StudentForm({ student, onSuccess }: StudentFormProps) {
             }
             onSuccess();
         } catch (err) {
+            console.error('Error submitting student:', err);
             setError('Failed to save student');
         } finally {
             setIsSubmitting(false);

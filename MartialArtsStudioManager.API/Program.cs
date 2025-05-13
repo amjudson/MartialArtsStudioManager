@@ -5,11 +5,18 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MartialArtsStudioManager.API.Data;
 using MartialArtsStudioManager.API.Models;
+using MartialArtsStudioManager.Core.Entities;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 // Configure DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
